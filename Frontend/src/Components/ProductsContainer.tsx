@@ -1,18 +1,19 @@
 import { useContext } from "react";
 import ProductsContext from "../Context/ProductsContext";
+import Product from "./Product";
 
 function ProductsContainer() {
     const { products, categoryFilter, marketFilter } = useContext(ProductsContext);
 
     return (
-        <div data-testid="products-container-testid">
+        <div className="" data-testid="products-container-testid">
             {
                 products.filter((p) => categoryFilter === "" ? true : p.category === categoryFilter)
                     .filter((p) => marketFilter === "" ? true : p.market === marketFilter)    
                     .map((p, index) => {
                         return (
-                            <div key={index}>
-                                <p>{p.title}</p>
+                            <div className="flex justify-center" key={index}>
+                                <Product p={p} />
                             </div>
                         );
                     })
