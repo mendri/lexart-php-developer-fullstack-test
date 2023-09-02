@@ -8,14 +8,20 @@ function App() {
 
     return (
         <ProductsProvider>
-            <header>
-                <CategoryFilter />
-                <MarketFilter />
-                <SearchForm />
-            </header>
-            <main>
-                <ProductsContainer />
-            </main>
+            <div className="m-6">
+                <header className="flex items-start w-full">
+                    <div className="flex justify-around items-center w-2/5">
+                        <CategoryFilter />
+                        <MarketFilter />
+                    </div>
+                    <div className="flex items-center w-3/5">
+                        <SearchForm />
+                    </div>
+                </header>
+                <main className="mt-40">
+                    <ProductsContainer />
+                </main>
+            </div>
         </ProductsProvider>
     );
 }
