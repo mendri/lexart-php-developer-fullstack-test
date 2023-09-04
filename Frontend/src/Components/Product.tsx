@@ -16,11 +16,28 @@ function Product(props: {p: IProduct}) {
             </div>
             <div className="flex flex-col justify-evenly w-8/12 ml-4">
                 <h2 className="m-2 text-2xl font-extrabold">{p.title}</h2>
-                <p className={showMore ? "m-2 text-sm font-medium" : "m-2 text-sm max-h-20 overflow-hidden font-medium"}>{p.description}</p>
-                {!showMore && (
-                    <button onClick={toggleShowMore} className="m-2 mt-0 text-sm text-blue-900 underline">Mostrar mais</button> 
+                {p.description.length > 20 ? (
+                    <p className={showMore ? "m-2 text-sm font-medium" : "m-2 text-sm max-h-20 overflow-hidden font-medium"}>
+                        {p.description == "" ? "Não possível encontrar a descrição do produto" : p.description}
+                    </p>
+                ) : (
+                    <p className="m-2 text-sm font-medium">{p.description}</p>
                 )}
-                <p className="font-extrabold text-2xl m-2">{`R$ ${p.price}`}</p>
+
+                {p.description.length > 20 && (
+                    !showMore ? (
+                        <button onClick={toggleShowMore} className="m-2 mt-0 text-sm text-blue-900 underline">Mostrar mais</button>
+                    ) : (
+                        <button onClick={toggleShowMore} className="m-2 mt-0 text-sm text-blue-900 underline">Mostrar menos</button>
+                    )
+                )}
+
+                <div className="flex justify-between w-full">
+                    <p className="font-extrabold text-2xl m-2">{p.price}</p>
+                    <div className="flex w-52 justify-center">
+                        <p className="font-extrabold text-lg m-2 mr-16">{p.market == "mercado_livre" ? "Mercado Livre" : "Buscapé"}</p>
+                    </div>
+                </div>
             </div>
             <div className="flex w-2/12 justify-center items-center">
                 <a className="w-3/4 flex justify-center" target="_blank" href={p.market_page_link} rel="noreferrer">
