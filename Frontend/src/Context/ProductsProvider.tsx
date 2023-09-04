@@ -23,9 +23,10 @@ function ProductsProvider({ children }: ProductsProviderProps) {
 
     async function searchProducts(searchInput: string) {
         try {
-            const { data } = await WebScrapperInstance.get(`/?search=${searchInput}`);
+            const { data } = await WebScrapperInstance.get(`/scraper?search=${searchInput}`);
             setProducts(data.products);
         } catch (e) {
+            console.log(e);
             setProducts(productsMock);
         }
     }
