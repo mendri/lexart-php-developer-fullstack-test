@@ -1,4 +1,5 @@
 import CategoryFilter from "./Components/CategoryFilter";
+import Loading from "./Components/Loading";
 import MarketFilter from "./Components/MarketFilter";
 import ProductsContainer from "./Components/ProductsContainer";
 import SearchForm from "./Components/SearchForm";
@@ -18,7 +19,8 @@ function App() {
                         <SearchForm />
                     </div>
                 </header>
-                <main className="mt-40">
+                <main className="mt-40 flex justify-center">
+                    <Loading />
                     <ProductsContainer />
                 </main>
             </div>

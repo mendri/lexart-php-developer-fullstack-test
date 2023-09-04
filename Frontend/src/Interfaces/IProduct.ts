@@ -4,7 +4,6 @@ interface IProduct {
   description: string,
   price: number,
   market_page_link: string
-  category: string
   market: string
 }
 

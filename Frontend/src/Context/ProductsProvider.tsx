@@ -1,5 +1,4 @@
 import { useState } from "react";
-import productsMock from "../Tests/productsMock";
 import IProduct from "../Interfaces/IProduct";
 import ProductsContext from "./ProductsContext";
 import WebScrapperInstance from "../Axios/WebScrapperInstance";
@@ -10,29 +9,29 @@ type ProductsProviderProps = {
 
 function ProductsProvider({ children }: ProductsProviderProps) {
     const [products, setProducts] = useState<Array<IProduct>>([]);
-    const [categoryFilter, setCategoryFilter] = useState("");
     const [marketFilter, setMarketFilter] = useState("");
-
-    function handleCategoryFilter(category: string) {
-        setCategoryFilter(category);
-    }
+    const [isLoading, setIsLoading] = useState(false);
 
     function handleMarketFilter(market: string) {
         setMarketFilter(market);
     }
 
     async function searchProducts(searchInput: string) {
+        setProducts([]);
+        
         try {
+            setIsLoading(true);
             const { data } = await WebScrapperInstance.get(`/scraper?search=${searchInput}`);
+            setIsLoading(false);
             setProducts(data.products);
         } catch (e) {
             console.log(e);
-            setProducts(productsMock);
+            setIsLoading(false);
         }
     }
 
     return (
-        <ProductsContext.Provider value={{ products, categoryFilter, handleCategoryFilter, marketFilter, handleMarketFilter, searchProducts }}>
+        <ProductsContext.Provider value={{ products, marketFilter, handleMarketFilter, searchProducts, isLoading }}>
             {children}
         </ProductsContext.Provider>
     );

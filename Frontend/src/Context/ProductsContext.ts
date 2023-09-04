@@ -4,11 +4,10 @@ import IProduct from "../Interfaces/IProduct";
 type ProductsContextType = {
 
   products: Array<IProduct>;
-  categoryFilter: string;
-  handleCategoryFilter: (category: string) => void
   marketFilter: string;
-  handleMarketFilter: (market: string) => void
-  searchProducts: (searchInput: string) => void
+  handleMarketFilter: (market: string) => void;
+  searchProducts: (searchInput: string) => void;
+  isLoading: boolean;
 };
 
 const ProductsContext = createContext({} as ProductsContextType);
