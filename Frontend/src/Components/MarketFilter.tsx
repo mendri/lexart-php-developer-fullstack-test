@@ -5,8 +5,8 @@ function MarketFilter() {
     const { handleMarketFilter } = useContext(ProductsContext);
 
     return (
-        <select className="w-2/6 text-white font-extrabold bg-blue-950 p-2 rounded-md shadow-md" onChange={(e) => handleMarketFilter(e.target.value)} data-testid="market-dropdown-testid" defaultValue="All">
-            <option value="">All Markets</option>
+        <select className="w-5/12 text-white font-extrabold bg-blue-950 p-2 rounded-md shadow-md" onChange={(e) => handleMarketFilter(e.target.value)} data-testid="market-dropdown-testid" defaultValue="All">
+            <option value="">Filtre por mercado:</option>
             <option value="mercado_livre">Mercado Livre</option>
             <option value="buscape">Buscapé</option>
         </select>
