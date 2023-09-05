@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Search;
 use Exception;
 use Illuminate\Http\Request;
 use Goutte\Client;
 
 class ScraperController extends Controller
 {
-    private function mercadoLivreSearchScraper($search)
+    private function mercadoLivreSearchScraper($searchInput)
 {
+    usleep(100000);
     $client = new Client();
-    $crawler = $client->request('GET', "https://lista.mercadolivre.com.br/$search");
+    $crawler = $client->request('GET', "https://lista.mercadolivre.com.br/$searchInput");
 
     $products = $crawler->filter('.ui-search-result__wrapper')->slice(0, 5)->each(function ($node) use ($client) {
         $title = $node->filter('.shops__item-title')->text();
@@ -21,11 +23,11 @@ class ScraperController extends Controller
         $description = "";
 
         try {
+            usleep(100000);
             $productPage = $client->request('GET', $productLink);
             $description = $productPage->filter('.ui-pdp-description__content')->text();
         } catch(Exception $e) {
         }
-
 
         return [
             "title" => $title,
@@ -40,10 +42,11 @@ class ScraperController extends Controller
     return $products;
 }
 
-    private function buscapeSearchScraper($search)
+    private function buscapeSearchScraper($searchInput)
 {
+    usleep(100000);
     $client = new Client();
-    $crawler = $client->request('GET', "https://www.buscape.com.br/search?q=$search");
+    $crawler = $client->request('GET', "https://www.buscape.com.br/search?q=$searchInput");
 
     $products = $crawler->filter('.ProductCard_ProductCard__EEJFq')->slice(0, 5)->each(function ($node) {
         $title = $node->filter('.ProductCard_ProductCard_Name__LT7hv')->text();
@@ -68,20 +71,35 @@ class ScraperController extends Controller
     return $products;
 }
 
+private function saveSearch($searchInput, $products)
+{
+    $search = new Search();
+    $search->search = strtolower($searchInput);
+    $search->result = json_encode($products);
+    $search->save();
+}
+
     public function index(Request $request)
 {
-    $search = $request->input('search');
+    $searchInput = $request->input('search');
+    $search = Search::where('search', strtolower($searchInput))->get();
+
+    if ($search->isEmpty()) {
+        $mercadoLivreProducts = $this->mercadoLivreSearchScraper($searchInput);
+        $buscapeProducts = $this->buscapeSearchScraper($searchInput);
     
-    $mercadoLivreProducts = $this->mercadoLivreSearchScraper($search);
-    $buscapeProducts = $this->buscapeSearchScraper($search);
+        $products = array_merge($mercadoLivreProducts, $buscapeProducts);
+        shuffle($products);
+    
+        $response = [
+            "products" => $products,
+        ];
+    
+        $this->saveSearch($searchInput, $response);
 
-    $products = array_merge($mercadoLivreProducts, $buscapeProducts);
-    shuffle($products);
-
-    $response = [
-        "products" => $products,
-    ];
-
-    return $response;
+        return $response;
+    } else {
+        return json_decode($search[0]["result"]);
+    }
 }
 }
